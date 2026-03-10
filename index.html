@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cultura Builder — Formando Arquitetos de IA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy:    '#0A1628',
+            brand:   '#1F6FEB',
+            electric:'#2D7FF9',
+            bgsoft:  '#F5F7FB',
+            neutral: '#6B7280',
+            cyan:    '#38BDF8',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            heading: ['Montserrat', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+
+    body { background-color: #F5F7FB; color: #0A1628; font-family: 'Inter', sans-serif; }
+
+    /* ── Animations ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Hero gradient background ── */
+    .hero-bg {
+      background: linear-gradient(135deg, #0A1628 0%, #0d1f3c 40%, #122d55 70%, #163a6b 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(31,111,235,0.18) 0%, transparent 55%),
+        radial-gradient(circle at 80% 20%, rgba(45,127,249,0.12) 0%, transparent 50%),
+        radial-gradient(circle at 60% 80%, rgba(56,189,248,0.08) 0%, transparent 45%);
+      pointer-events: none;
+    }
+    /* subtle dot grid */
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+
+    /* ── Glassmorphism card ── */
+    .glass-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 16px;
+    }
+
+    /* ── Section divider ── */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #1F6FEB;
+      background: rgba(31,111,235,0.08);
+      border: 1px solid rgba(31,111,235,0.2);
+      border-radius: 999px;
+      padding: 4px 14px;
+    }
+
+    /* ── Card hover ── */
+    .hover-card {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .hover-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 48px rgba(31,111,235,0.12);
+    }
+
+    /* ── CTA button ── */
+    .btn-primary {
+      background: linear-gradient(135deg, #1F6FEB, #2D7FF9);
+      color: #fff;
+      font-weight: 700;
+      padding: 16px 36px;
+      border-radius: 10px;
+      font-size: 1rem;
+      letter-spacing: 0.01em;
+      transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 24px rgba(31,111,235,0.35);
+      display: inline-block;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary:hover {
+      opacity: 0.93;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(31,111,235,0.45);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: 1rem;
+      border: 1.5px solid rgba(255,255,255,0.35);
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.6);
+      transform: translateY(-2px);
+    }
+
+    /* ── Nav ── */
+    nav {
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    /* ── Timeline era ── */
+    .era-line {
+      position: relative;
+    }
+    .era-line::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 40px;
+      bottom: -20px;
+      width: 2px;
+      background: linear-gradient(to bottom, #1F6FEB, transparent);
+    }
+
+    /* ── Vision quote ── */
+    .vision-section {
+      background: linear-gradient(135deg, #0A1628 0%, #122d55 100%);
+    }
+
+    /* ── Final CTA ── */
+    .cta-section {
+      background: linear-gradient(135deg, #0d1f3c 0%, #0A1628 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at 30% 50%, rgba(31,111,235,0.2) 0%, transparent 60%),
+                        radial-gradient(circle at 75% 30%, rgba(56,189,248,0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     NAV
+══════════════════════════════════════ -->
+<nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-navy/80">
+  <div class="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
+    <!-- Logo -->
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-electric flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
+        </svg>
+      </div>
+      <span class="font-heading font-800 text-white text-lg tracking-tight font-bold">Cultura <span class="text-electric">Builder</span></span>
+    </div>
+    <!-- Links -->
+    <div class="hidden md:flex items-center gap-8 text-sm text-white/70 font-medium">
+      <a href="#sobre" class="hover:text-white transition-colors">Sobre</a>
+      <a href="#aprende" class="hover:text-white transition-colors">O que aprende</a>
+      <a href="#diferenciais" class="hover:text-white transition-colors">Diferenciais</a>
+      <a href="#quem" class="hover:text-white transition-colors">Para quem</a>
+    </div>
+    <a href="#cta" class="btn-primary text-sm px-5 py-3 hidden md:inline-block" style="padding:10px 22px;font-size:0.875rem;">
+      Conhecer o programa
+    </a>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section class="hero-bg min-h-screen flex items-center pt-16">
+  <div class="max-w-6xl mx-auto px-6 py-24 relative z-10 w-full">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <!-- Text -->
+      <div class="fade-up">
+        <div class="section-label mb-6" style="color:#38BDF8;background:rgba(56,189,248,0.1);border-color:rgba(56,189,248,0.25);">
+          <span>●</span> Programa de Formação em IA
+        </div>
+        <h1 class="font-heading font-black text-white leading-tight mb-6" style="font-size:clamp(2rem,4vw,3.25rem);line-height:1.1;">
+          Formando a primeira geração de<br />
+          <span style="background:linear-gradient(90deg,#38BDF8,#2D7FF9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+            arquitetos de IA
+          </span><br />
+          da América Latina
+        </h1>
+        <p class="text-white/65 text-lg leading-relaxed mb-10 max-w-lg">
+          A geração anterior aprendeu a usar computadores e internet.<br />
+          A próxima geração precisará aprender a <strong class="text-white/90">construir com Inteligência Artificial</strong>.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#sobre" class="btn-primary">Conhecer o programa</a>
+          <a href="#aprende" class="btn-outline">O que os jovens aprendem</a>
+        </div>
+        <!-- Trust badges -->
+        <div class="mt-12 flex flex-wrap gap-6 text-white/40 text-sm font-medium">
+          <span class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-cyan" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            12 a 17 anos
+          </span>
+          <span class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-cyan" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            Prática real com ferramentas profissionais
+          </span>
+          <span class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-cyan" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            Comunidade de builders
+          </span>
+        </div>
+      </div>
+      <!-- Image -->
+      <div class="fade-up" style="transition-delay:0.15s;">
+        <div class="relative">
+          <div class="absolute -inset-4 rounded-3xl opacity-30" style="background:radial-gradient(ellipse at center, #1F6FEB 0%, transparent 70%);"></div>
+          <img
+            src="../Pictures/Saved Pictures/ChatGPT Image 10 de mar. de 2026, 13_11_06.png"
+            alt="Família com filho usando tecnologia juntos"
+            class="relative w-full rounded-2xl object-cover"
+            style="box-shadow:0 32px 80px rgba(0,0,0,0.5);max-height:440px;"
+          />
+          <!-- Floating badge -->
+          <div class="absolute -bottom-5 -left-5 glass-card px-5 py-3 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background:rgba(31,111,235,0.2);">
+              <svg class="w-5 h-5 text-electric" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+            </div>
+            <div>
+              <p class="text-white text-sm font-bold">Decisão em família</p>
+              <p class="text-white/50 text-xs">para o futuro do seu filho</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     NOVA ONDA TECNOLÓGICA
+══════════════════════════════════════ -->
+<section class="py-28 bg-white" id="eras">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16 fade-up">
+      <div class="section-label mb-5 mx-auto" style="width:fit-content;">
+        Contexto histórico
+      </div>
+      <h2 class="font-heading font-black text-navy text-4xl md:text-5xl leading-tight mb-5">
+        Toda grande revolução tecnológica<br />segue o mesmo padrão
+      </h2>
+      <p class="text-neutral text-lg max-w-2xl mx-auto">
+        Quem aprende uma nova tecnologia cedo tem vantagem competitiva por décadas. Sempre foi assim.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Era 1 -->
+      <div class="hover-card bg-bgsoft rounded-2xl p-7 fade-up" style="transition-delay:0.05s;">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#e8f0fe,#d0e2ff);">
+          <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2h-2"/></svg>
+        </div>
+        <p class="text-xs font-bold text-brand uppercase tracking-widest mb-2">Anos 1980</p>
+        <h3 class="font-heading font-bold text-navy text-xl mb-3">Computador Pessoal</h3>
+        <p class="text-neutral text-sm leading-relaxed">
+          Quem aprendeu a programar e operar PCs cedo construiu as empresas de tecnologia que dominam o mundo até hoje.
+        </p>
+      </div>
+      <!-- Era 2 -->
+      <div class="hover-card bg-bgsoft rounded-2xl p-7 fade-up" style="transition-delay:0.1s;">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#e8f0fe,#d0e2ff);">
+          <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <p class="text-xs font-bold text-brand uppercase tracking-widest mb-2">Anos 1990</p>
+        <h3 class="font-heading font-bold text-navy text-xl mb-3">Internet</h3>
+        <p class="text-neutral text-sm leading-relaxed">
+          Quem entendeu a web antes dos outros criou as maiores fortunas da história moderna. Google, Amazon, Facebook.
+        </p>
+      </div>
+      <!-- Era 3 -->
+      <div class="hover-card bg-bgsoft rounded-2xl p-7 fade-up" style="transition-delay:0.15s;">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#e8f0fe,#d0e2ff);">
+          <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        </div>
+        <p class="text-xs font-bold text-brand uppercase tracking-widest mb-2">Anos 2010</p>
+        <h3 class="font-heading font-bold text-navy text-xl mb-3">Smartphones</h3>
+        <p class="text-neutral text-sm leading-relaxed">
+          A geração que cresceu com apps criou uma indústria bilionária. Quem construiu primeiro colheu os maiores frutos.
+        </p>
+      </div>
+      <!-- Era 4 — IA (destaque) -->
+      <div class="hover-card rounded-2xl p-7 fade-up" style="background:linear-gradient(135deg,#0A1628,#163a6b);transition-delay:0.2s;">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:rgba(45,127,249,0.25);">
+          <svg class="w-6 h-6 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        </div>
+        <p class="text-xs font-bold text-cyan uppercase tracking-widest mb-2">Agora — 2020s</p>
+        <h3 class="font-heading font-bold text-white text-xl mb-3">Inteligência Artificial</h3>
+        <p class="text-white/65 text-sm leading-relaxed">
+          Estamos no início. <strong class="text-white">Seu filho pode ser um dos primeiros</strong> a aprender a construir com IA — e ter vantagem por toda a carreira.
+        </p>
+        <div class="mt-4 pt-4 border-t border-white/10">
+          <span class="text-cyan text-xs font-bold">● Janela de oportunidade aberta agora</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     O MOMENTO DA IA
+══════════════════════════════════════ -->
+<section class="py-28 bg-bgsoft" id="momento">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16 fade-up">
+      <div class="section-label mb-5 mx-auto" style="width:fit-content;">
+        O cenário atual
+      </div>
+      <h2 class="font-heading font-black text-navy text-4xl md:text-5xl leading-tight mb-5">
+        Estamos no início<br />da era da Inteligência Artificial
+      </h2>
+      <p class="text-neutral text-lg max-w-xl mx-auto">
+        A maioria das pessoas ainda não entende o que está acontecendo — e essa diferença definirá carreiras.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="hover-card bg-white rounded-2xl p-8 text-center fade-up" style="transition-delay:0.05s;">
+        <div class="w-14 h-14 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(31,111,235,0.1),rgba(45,127,249,0.15));">
+          <svg class="w-7 h-7 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+        </div>
+        <h3 class="font-heading font-bold text-navy text-xl mb-3">A maioria só consome</h3>
+        <p class="text-neutral text-sm leading-relaxed">
+          Poucas pessoas realmente sabem usar IA de forma estratégica. A grande maioria apenas usa ferramentas prontas sem entender o potencial por trás delas.
+        </p>
+      </div>
+
+      <div class="hover-card bg-white rounded-2xl p-8 text-center fade-up" style="transition-delay:0.1s;">
+        <div class="w-14 h-14 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(31,111,235,0.1),rgba(45,127,249,0.15));">
+          <svg class="w-7 h-7 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+        </div>
+        <h3 class="font-heading font-bold text-navy text-xl mb-3">Construir é o diferencial</h3>
+        <p class="text-neutral text-sm leading-relaxed">
+          Os profissionais que saberão construir agentes, automações e sistemas com IA serão os mais valorizados do mercado — em qualquer área.
+        </p>
+      </div>
+
+      <div class="hover-card rounded-2xl p-8 text-center fade-up" style="background:linear-gradient(135deg,#0A1628,#163a6b);transition-delay:0.15s;">
+        <div class="w-14 h-14 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="background:rgba(56,189,248,0.15);">
+          <svg class="w-7 h-7 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3 class="font-heading font-bold text-white text-xl mb-3">A janela está aberta</h3>
+        <p class="text-white/65 text-sm leading-relaxed">
+          Quem aprender a <strong class="text-white">construir com IA agora</strong>, aos 12 ou 17 anos, terá vantagem de uma geração inteira sobre os pares.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     O QUE É O CULTURA BUILDER
+══════════════════════════════════════ -->
+<section class="py-28 bg-white" id="sobre">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <div class="fade-up">
+        <div class="section-label mb-5">O programa</div>
+        <h2 class="font-heading font-black text-navy text-4xl md:text-5xl leading-tight mb-6">
+          Um ecossistema completo de formação em IA
+        </h2>
+        <p class="text-neutral text-lg leading-relaxed mb-8">
+          O Cultura Builder não é um curso tradicional. É um <strong class="text-navy">ecossistema de formação</strong> que combina aprendizado prático, ferramentas profissionais e uma comunidade ativa de jovens construtores.
+        </p>
+        <div class="space-y-5">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(31,111,235,0.1),rgba(45,127,249,0.15));">
+              <svg class="w-5 h-5 text-brand" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-navy text-base mb-1">Formação prática</h4>
+              <p class="text-neutral text-sm">Aprendizado baseado em projetos reais, não teoria isolada.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(31,111,235,0.1),rgba(45,127,249,0.15));">
+              <svg class="w-5 h-5 text-brand" fill="currentColor" viewBox="0 0 20 20"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-navy text-base mb-1">Ferramentas profissionais</h4>
+              <p class="text-neutral text-sm">Acesso às mesmas ferramentas usadas por profissionais de tecnologia.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(31,111,235,0.1),rgba(45,127,249,0.15));">
+              <svg class="w-5 h-5 text-brand" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-navy text-base mb-1">Comunidade de builders</h4>
+              <p class="text-neutral text-sm">Jovens construtores colaborando, evoluindo e se desafiando juntos.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(31,111,235,0.1),rgba(45,127,249,0.15));">
+              <svg class="w-5 h-5 text-brand" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"/></svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-navy text-base mb-1">Mentalidade de construção</h4>
+              <p class="text-neutral text-sm">Mais do que habilidades técnicas: forma uma mentalidade inovadora e criativa.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Stat block -->
+      <div class="fade-up" style="transition-delay:0.15s;">
+        <div class="rounded-2xl p-10" style="background:linear-gradient(135deg,#0A1628,#163a6b);">
+          <p class="text-white/50 text-sm font-medium uppercase tracking-wider mb-8">Por que agora?</p>
+          <div class="grid grid-cols-2 gap-8">
+            <div>
+              <p class="font-heading font-black text-white" style="font-size:2.5rem;line-height:1;">85<span class="text-cyan text-3xl">%</span></p>
+              <p class="text-white/50 text-sm mt-2">dos empregos de 2030 ainda não existem</p>
+            </div>
+            <div>
+              <p class="font-heading font-black text-white" style="font-size:2.5rem;line-height:1;">10<span class="text-cyan text-2xl">×</span></p>
+              <p class="text-white/50 text-sm mt-2">mais produtivos serão os profissionais que dominam IA</p>
+            </div>
+            <div>
+              <p class="font-heading font-black text-white" style="font-size:2.5rem;line-height:1;"><span class="text-cyan">&lt;</span>3<span class="text-cyan text-2xl">%</span></p>
+              <p class="text-white/50 text-sm mt-2">da população sabe construir com IA hoje</p>
+            </div>
+            <div>
+              <p class="font-heading font-black text-white" style="font-size:2.5rem;line-height:1;">1<span class="text-cyan text-2xl">ª</span></p>
+              <p class="text-white/50 text-sm mt-2">geração que pode dominar a IA desde a adolescência</p>
+            </div>
+          </div>
+          <div class="mt-8 pt-8 border-t border-white/10">
+            <p class="text-white/70 text-sm leading-relaxed">
+              Seu filho tem a oportunidade de entrar nesse 3% que vai <strong class="text-white">construir o futuro</strong> — não apenas usá-lo.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     O QUE OS JOVENS APRENDEM
+══════════════════════════════════════ -->
+<section class="py-28 bg-bgsoft" id="aprende">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16 fade-up">
+      <div class="section-label mb-5 mx-auto" style="width:fit-content;">Currículo</div>
+      <h2 class="font-heading font-black text-navy text-4xl md:text-5xl leading-tight mb-5">
+        O que os jovens aprendem
+      </h2>
+      <p class="text-neutral text-lg max-w-xl mx-auto">
+        Habilidades práticas e profissionais que abrem portas em qualquer área.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Card 1 -->
+      <div class="hover-card bg-white rounded-2xl p-7 fade-up" style="transition-delay:0.05s;">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#e8f0fe,#d0e2ff);">
+          <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        </div>
+        <h3 class="font-heading font-bold text-navy text-lg mb-2">Agentes de IA</h3>
+        <p class="text-neutral text-sm leading-relaxed">
+          Criam agentes autônomos que executam tarefas, tomam decisões e resolvem problemas complexos usando inteligência artificial.
+        </p>
+      </div>
+      <!-- Card 2 -->
+      <div class="hover-card bg-white rounded-2xl p-7 fade-up" style="transition-delay:0.1s;">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#e8f0fe,#d0e2ff);">
+          <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </div>
+        <h3 class="font-heading font-bold text-navy text-lg mb-2">Automações</h3>
+        <p class="text-neutral text-sm leading-relaxed">
+          Desenvolvem fluxos automáticos que eliminam trabalho repetitivo e conectam diferentes sistemas e ferramentas de forma inteligente.
+        </p>
+      </div>
+      <!-- Card 3 -->
+      <div class="hover-card bg-white rounded-2xl p-7 fade-up" style="transition-delay:0.15s;">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#e8f0fe,#d0e2ff);">
+          <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+        </div>
+        <h3 class="font-heading font-bold text-navy text-lg mb-2">Construção de sistemas</h3>
+        <p class="text-neutral text-sm leading-relaxed">
+          Projetam e constroem sistemas completos com IA como componente central — da ideia ao produto funcional.
+        </p>
+      </div>
+      <!-- Card 4 -->
+      <div class="hover-card bg-white rounded-2xl p-7 fade-up" style="transition-delay:0.2s;">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#e8f0fe,#d0e2ff);">
+          <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </div>
+        <h3 class="font-heading font-bold text-navy text-lg mb-2">Ferramentas profissionais</h3>
+        <p class="text-neutral text-sm leading-relaxed">
+          Dominam as ferramentas de IA usadas pelas maiores empresas de tecnologia do mundo — antes de qualquer concorrente.
+        </p>
+      </div>
+      <!-- Card 5 -->
+      <div class="hover-card bg-white rounded-2xl p-7 fade-up" style="transition-delay:0.25s;">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#e8f0fe,#d0e2ff);">
+          <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+        </div>
+        <h3 class="font-heading font-bold text-navy text-lg mb-2">Criação de soluções</h3>
+        <p class="text-neutral text-sm leading-relaxed">
+          Identificam problemas reais e criam soluções com IA — desenvolvendo o mindset de quem resolve, não de quem espera.
+        </p>
+      </div>
+      <!-- Card 6 — bonus -->
+      <div class="hover-card rounded-2xl p-7 fade-up" style="background:linear-gradient(135deg,#0A1628,#163a6b);transition-delay:0.3s;">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:rgba(56,189,248,0.15);">
+          <svg class="w-6 h-6 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3 class="font-heading font-bold text-white text-lg mb-2">Mentalidade builder</h3>
+        <p class="text-white/65 text-sm leading-relaxed">
+          Mais do que técnica: desenvolvem a <strong class="text-white">mentalidade de quem constrói o futuro</strong> — curiosidade, criatividade e capacidade de execução.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     AMBIENTE DE APRENDIZADO
+══════════════════════════════════════ -->
+<section class="py-0 overflow-hidden" id="ambiente">
+  <div class="relative">
+    <img
+      src="../Pictures/Saved Pictures/ChatGPT Image 10 de mar. de 2026, 13_17_53.png"
+      alt="Adolescentes no laboratório de IA"
+      class="w-full object-cover"
+      style="max-height:600px;filter:brightness(0.7);"
+    />
+    <div class="absolute inset-0 flex items-end" style="background:linear-gradient(to top, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0.3) 60%, transparent 100%);">
+      <div class="max-w-6xl mx-auto px-6 pb-16 w-full">
+        <div class="max-w-2xl fade-up">
+          <span class="section-label mb-4 inline-flex" style="color:#38BDF8;background:rgba(56,189,248,0.1);border-color:rgba(56,189,248,0.25);">
+            Ambiente de aprendizado
+          </span>
+          <h2 class="font-heading font-black text-white text-3xl md:text-4xl leading-tight mt-4 mb-4">
+            Jovens aprendendo a construir soluções com Inteligência Artificial.
+          </h2>
+          <p class="text-white/65 text-lg">
+            Um ambiente colaborativo, diverso e inspirador — onde a próxima geração encontra sua vocação tecnológica.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     DIFERENCIAIS
+══════════════════════════════════════ -->
+<section class="py-28 bg-white" id="diferenciais">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16 fade-up">
+      <div class="section-label mb-5 mx-auto" style="width:fit-content;">Por que escolher</div>
+      <h2 class="font-heading font-black text-navy text-4xl md:text-5xl leading-tight mb-5">
+        Diferenciais do Cultura Builder
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="hover-card rounded-2xl p-8 border border-gray-100 fade-up" style="transition-delay:0.05s;">
+        <div class="flex items-start gap-5">
+          <div class="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(31,111,235,0.1),rgba(45,127,249,0.15));">
+            <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-navy text-xl mb-2">Prática real desde o dia 1</h3>
+            <p class="text-neutral text-sm leading-relaxed">
+              Sem teoria infinita. Os jovens colocam a mão na massa desde o início, construindo projetos reais que podem mostrar para qualquer recrutador ou investidor.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hover-card rounded-2xl p-8 border border-gray-100 fade-up" style="transition-delay:0.1s;">
+        <div class="flex items-start gap-5">
+          <div class="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(31,111,235,0.1),rgba(45,127,249,0.15));">
+            <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-navy text-xl mb-2">Ferramentas profissionais reais</h3>
+            <p class="text-neutral text-sm leading-relaxed">
+              Acesso às mesmas plataformas e ferramentas de IA usadas pelas maiores empresas de tecnologia. Não simulações — o ambiente real.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hover-card rounded-2xl p-8 border border-gray-100 fade-up" style="transition-delay:0.15s;">
+        <div class="flex items-start gap-5">
+          <div class="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(31,111,235,0.1),rgba(45,127,249,0.15));">
+            <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-navy text-xl mb-2">Mentalidade de construção</h3>
+            <p class="text-neutral text-sm leading-relaxed">
+              Formamos builders — pessoas que diante de um problema pensam em como resolver com tecnologia. Essa mentalidade vale para qualquer carreira.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hover-card rounded-2xl p-8 border border-gray-100 fade-up" style="transition-delay:0.2s;">
+        <div class="flex items-start gap-5">
+          <div class="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(31,111,235,0.1),rgba(45,127,249,0.15));">
+            <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-navy text-xl mb-2">Ecossistema de builders</h3>
+            <p class="text-neutral text-sm leading-relaxed">
+              Uma comunidade de jovens que se desafiam, colaboram e crescem juntos. O network que seu filho vai construir aqui vale para a vida toda.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     PARA QUEM É
+══════════════════════════════════════ -->
+<section class="py-28 bg-bgsoft" id="quem">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <div class="fade-up">
+      <div class="section-label mb-5 mx-auto" style="width:fit-content;">Público-alvo</div>
+      <h2 class="font-heading font-black text-navy text-4xl md:text-5xl leading-tight mb-6">
+        Para pais com filhos<br />entre 12 e 17 anos
+      </h2>
+      <p class="text-neutral text-lg leading-relaxed max-w-2xl mx-auto mb-14">
+        O Cultura Builder foi desenhado para jovens curiosos, independentemente de terem experiência prévia com tecnologia. O único requisito é querer construir.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="hover-card bg-white rounded-2xl p-8 text-center fade-up" style="transition-delay:0.05s;">
+        <div class="w-14 h-14 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(31,111,235,0.1),rgba(45,127,249,0.15));">
+          <svg class="w-7 h-7 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        <h3 class="font-heading font-bold text-navy text-xl mb-3">Carreiras do futuro</h3>
+        <p class="text-neutral text-sm leading-relaxed">
+          Prepara para as profissões mais valorizadas das próximas décadas — muitas das quais ainda nem existem.
+        </p>
+      </div>
+
+      <div class="hover-card bg-white rounded-2xl p-8 text-center fade-up" style="transition-delay:0.1s;">
+        <div class="w-14 h-14 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(31,111,235,0.1),rgba(45,127,249,0.15));">
+          <svg class="w-7 h-7 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        </div>
+        <h3 class="font-heading font-bold text-navy text-xl mb-3">Alfabetização tecnológica</h3>
+        <p class="text-neutral text-sm leading-relaxed">
+          Vai além do uso básico: entender, criar e dominar tecnologia como linguagem nativa.
+        </p>
+      </div>
+
+      <div class="hover-card bg-white rounded-2xl p-8 text-center fade-up" style="transition-delay:0.15s;">
+        <div class="w-14 h-14 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(31,111,235,0.1),rgba(45,127,249,0.15));">
+          <svg class="w-7 h-7 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3 class="font-heading font-bold text-navy text-xl mb-3">Mentalidade de inovação</h3>
+        <p class="text-neutral text-sm leading-relaxed">
+          Forma jovens que enxergam problemas como oportunidades e têm coragem de criar soluções.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     VISÃO
+══════════════════════════════════════ -->
+<section class="vision-section py-28">
+  <div class="max-w-4xl mx-auto px-6 text-center fade-up">
+    <div class="section-label mb-8 mx-auto" style="width:fit-content;color:#38BDF8;background:rgba(56,189,248,0.1);border-color:rgba(56,189,248,0.25);">
+      Nossa visão
+    </div>
+    <blockquote class="font-heading font-black text-white leading-tight mb-8" style="font-size:clamp(1.75rem,4vw,3rem);">
+      "Não basta aprender sobre tecnologia.<br />
+      <span style="background:linear-gradient(90deg,#38BDF8,#2D7FF9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+        É preciso aprender a construir tecnologia.
+      </span>"
+    </blockquote>
+    <p class="text-white/50 text-lg">
+      — Cultura Builder
+    </p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     CTA FINAL
+══════════════════════════════════════ -->
+<section class="cta-section py-28" id="cta">
+  <div class="max-w-4xl mx-auto px-6 text-center relative z-10 fade-up">
+    <div class="section-label mb-6 mx-auto" style="width:fit-content;color:#38BDF8;background:rgba(56,189,248,0.1);border-color:rgba(56,189,248,0.25);">
+      Próximo passo
+    </div>
+    <h2 class="font-heading font-black text-white leading-tight mb-6" style="font-size:clamp(2rem,4vw,3.25rem);">
+      Prepare seu filho para o futuro<br />da Inteligência Artificial.
+    </h2>
+    <p class="text-white/60 text-xl leading-relaxed mb-10 max-w-2xl mx-auto">
+      A janela de oportunidade está aberta agora. Os jovens que aprenderem a construir com IA hoje serão os líderes de amanhã.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="#" class="btn-primary text-lg" style="padding:18px 44px;font-size:1.1rem;">
+        Entrar para o Cultura Builder
+      </a>
+      <a href="#sobre" class="btn-outline text-lg" style="padding:16px 40px;font-size:1.1rem;">
+        Saber mais primeiro
+      </a>
+    </div>
+    <p class="text-white/30 text-sm mt-8">
+      Programa para jovens de 12 a 17 anos &nbsp;·&nbsp; Vagas limitadas
+    </p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer class="bg-navy border-t border-white/10 py-10">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-brand to-electric flex items-center justify-center">
+        <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
+      </div>
+      <span class="font-heading font-bold text-white text-base">Cultura <span class="text-electric">Builder</span></span>
+    </div>
+    <p class="text-white/30 text-sm">
+      © 2026 Cultura Builder · Formando a próxima geração de arquitetos de IA
+    </p>
+    <div class="flex gap-6 text-white/40 text-sm">
+      <a href="#" class="hover:text-white/70 transition-colors">Privacidade</a>
+      <a href="#" class="hover:text-white/70 transition-colors">Contato</a>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ══════════════════════════════════════
+     JS — Scroll animations
+══════════════════════════════════════ -->
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
